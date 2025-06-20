@@ -46,17 +46,3 @@ Study Smart is a web app that transforms free-form academic to-do lists into per
 ---
 
 ## Installation (Coming Soon)
-
-```bash
-git clone https://github.com/yourusername/study-smart.git
-cd study-smart
-
-# Frontend
-cd client
-npm install
-npm run dev
-
-# Backend
-cd ../server
-pip install -r requirements.txt
-uvicorn main:app --reload
