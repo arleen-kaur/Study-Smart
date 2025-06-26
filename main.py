@@ -1,34 +1,38 @@
-from fastapi import FastAPI # to build web server
-from pydantic import BaseModel # define shape of data expected from user and auomatically validates
-from typing import Optional # in case a value can be none
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+from fastapi import FastAPI
 from pydantic import BaseModel
-from openai import OpenAI  # gpt-4
-import os # to get OpenAI API key
+from typing import Optional
+from openai import OpenAI
+from database import Base, engine
 
-app = FastAPI() # creates app to handle web routes and server logic
+import json
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY")) # secret key
+import scheduler
+from scheduler import schedule_tasks_cognitive
+from auth import router as auth_router
+
+app = FastAPI()
+app.include_router(auth_router, prefix="/auth")
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 class TaskInput(BaseModel):
     available_time_minutes: int
     raw_tasks_text: str
-    
+
 def call_gpt_parse_tasks(raw_text: str) -> str:
     system_message = {
         "role": "system",
         "content": (
             "You are a task parser that breaks down academic tasks into JSON format. "
             "Each task must include: description, subject, task_type, and estimated_duration_minutes. "
-            "If no duration is given, estimate based on task type. Estimate the time required for each "
-            "task based on typical effort and complexity. If the number of items is mentioned "
-            "(e.g., '10 problems'), consider how long such tasks usually take, and provide a realistic "
-            "total duration — even if the time isn’t explicitly stated."
+            "Estimate times based on task type and count even if not explicitly stated."
         )
     }
-    user_message = {
-        "role": "user",
-        "content": f"Tasks: {raw_text}"
-    }
+    user_message = {"role": "user", "content": f"Tasks: {raw_text}"}
 
     response = client.chat.completions.create(
         model="gpt-4",
@@ -38,18 +42,20 @@ def call_gpt_parse_tasks(raw_text: str) -> str:
 
     return response.choices[0].message.content
 
-
 @app.post("/parse-tasks")
-async def parse_tasks(task_input: TaskInput): # function run by FastAPI and receives user input already validated
-    parsed_tasks_json = call_gpt_parse_tasks(task_input.raw_tasks_text) # call GPT function to process task list
-    return { # send back json response with time and structured tasks
-        "available_time_minutes": task_input.available_time_minutes,
-        "parsed_tasks": parsed_tasks_json
-    }
+async def parse_tasks(task_input: TaskInput):
+    parsed_tasks_json = call_gpt_parse_tasks(task_input.raw_tasks_text)
+    try:
+        parsed_tasks = json.loads(parsed_tasks_json)
+    except json.JSONDecodeError:
+        return {
+            "error": "Failed to parse tasks JSON from GPT.",
+            "raw_response": parsed_tasks_json
+        }
 
-'''
-1. Gets OpenAI key
-2. Declares shape of user input and validates with FastAPI
-3. Defines function to talk to GPT-4
-4. Creates API route that receives user's time + todo list, passes to GPT-4, and returns user's time + GPT parsed list
-'''
+    schedule = schedule_tasks_cognitive(parsed_tasks, task_input.available_time_minutes)
+    return {
+        "available_time_minutes": task_input.available_time_minutes,
+        "parsed_tasks": parsed_tasks,
+        "schedule": schedule
+    }
