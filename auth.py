@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from passlib.context import CryptContext
 from jose import JWTError, jwt
+from fastapi import Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 import time
@@ -103,3 +104,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
 @router.get("/me")
 async def read_users_me(current_user: User = Depends(get_current_user)):
     return {"username": current_user.username}
+
+@router.get("/userinfo")
+async def get_user_info(current_user: DBUser = Depends(get_current_user)):
+    return {"id": current_user.id, "username": current_user.username}

@@ -1,0 +1,3 @@
+user_id,action_count_c,action_count_e,avg_duration_Break,avg_duration_Reading,avg_duration_assignment,total_tasks
+1,1,0,0.0,30.0,0.0,1
+3,2,1,5.0,0.0,70.0,3

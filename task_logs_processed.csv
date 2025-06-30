@@ -1,0 +1,5 @@
+scheduled_duration,actual_duration,completed,task_type_Break,task_type_Reading,task_type_assignment
+30,30,1,False,True,False
+55,85,0,False,False,True
+55,55,1,False,False,True
+5,5,1,True,False,False

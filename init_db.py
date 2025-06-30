@@ -1,5 +1,5 @@
 from database import engine, Base
-import models
+from models import User, TaskLog  # make sure TaskLog is included!
 
 print("Creating database tables...")
 Base.metadata.create_all(bind=engine)

@@ -9,6 +9,7 @@ def chunk_task(task, max_chunk_length=25):
     while remaining_time > 0:
         chunk_duration = min(max_chunk_length, remaining_time)
         chunks.append({
+            "task_id": task["task_id"],  # ✅ Preserve task_id
             "description": f"{task['description']} (Part {part})",
             "subject": task['subject'],
             "task_type": task['task_type'],
