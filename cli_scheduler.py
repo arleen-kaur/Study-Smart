@@ -1,8 +1,17 @@
 import requests
-import os
-from log_utils import log_action_db  # Your logging function
+from log_utils import log_action_db 
 
 BASE_URL = "http://127.0.0.1:8000"
+
+def signup(username, password):
+    data = {"username": username, "password": password}
+    response = requests.post(f"{BASE_URL}/auth/register", json=data)
+    if response.status_code == 400:
+        print("⚠️ User already exists, continuing to login.")
+    elif response.status_code == 201:
+        print("✅ User registered successfully.")
+    else:
+        response.raise_for_status()
 
 def login(username, password):
     data = {"username": username, "password": password}
@@ -16,13 +25,14 @@ def get_user_info(token):
     response.raise_for_status()
     return response.json()
 
-def get_schedule_from_backend(raw_tasks_text, available_time_minutes=120):
-    url = f"{BASE_URL}/parse-tasks"
+def get_schedule_from_backend(token, raw_tasks_text, available_time_minutes=120):
+    url = f"{BASE_URL}/personalized-schedule"
+    headers = {"Authorization": f"Bearer {token}"}
     payload = {
         "raw_tasks_text": raw_tasks_text,
         "available_time_minutes": available_time_minutes
     }
-    response = requests.post(url, json=payload)
+    response = requests.post(url, json=payload, headers=headers)
     response.raise_for_status()
     return response.json()['schedule']
 
@@ -77,6 +87,7 @@ if __name__ == "__main__":
     password = input("Password: ")
 
     try:
+        signup(username, password)
         token = login(username, password)
         user_info = get_user_info(token)
         user_id = user_info["id"]
@@ -86,7 +97,7 @@ if __name__ == "__main__":
         available_time = input("Enter your available time in minutes (default 120): ").strip()
         available_time = int(available_time) if available_time.isdigit() else 120
 
-        schedule = get_schedule_from_backend(raw_tasks, available_time)
+        schedule = get_schedule_from_backend(token, raw_tasks, available_time)
         run_interactive_scheduler(schedule, user_id)
 
     except Exception as e:
