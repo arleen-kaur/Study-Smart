@@ -166,3 +166,8 @@ def log_task(input: TaskActionInput, background_tasks: BackgroundTasks, current_
         db.close()
 
 Base.metadata.create_all(bind=engine)
+
+@app.get("/")
+def read_root():
+    return {"message": "Study Smart API is live!"}
+
