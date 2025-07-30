@@ -8,3 +8,4 @@ pydantic
 joblib
 pandas
 scikit-learn
+openai
