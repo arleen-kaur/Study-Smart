@@ -4,7 +4,7 @@ sqlalchemy==2.0.34
 python-jose==3.3.0
 passlib[bcrypt]==1.7.4
 python-dotenv==0.21.0
-openai==1.9.1
+openai==1.10.0
 pydantic==2.8.2
 psycopg2-binary==2.9.9   # for PostgreSQL
 pymysql==1.1.0           # for MySQL
