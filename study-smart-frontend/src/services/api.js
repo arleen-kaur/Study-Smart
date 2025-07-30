@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "https://study-smart-4ezm.onrender.com";
 
 export async function signup(username, password) {
   await fetch(`${BASE_URL}/auth/register`, {
