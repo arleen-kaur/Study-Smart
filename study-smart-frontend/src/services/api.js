@@ -42,7 +42,8 @@ export async function getSchedule(text, minutes) {
     },
     body: JSON.stringify({
       raw_tasks_text: text,
-      available_time_minutes: minutes
+      available_time_minutes: minutes,
+      must_do_tasks: []   // ✅ always send this field (fix)
     })
   });
   const data = await res.json();
