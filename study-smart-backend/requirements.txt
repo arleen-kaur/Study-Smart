@@ -10,3 +10,4 @@ pandas
 scikit-learn
 openai
 python-dotenv
+psycopg2-binary
