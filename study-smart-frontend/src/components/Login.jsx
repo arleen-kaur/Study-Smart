@@ -18,19 +18,14 @@ function Login({ onLogin }) {
 
       const token = await login(username, password);
       const userInfo = await getUserInfo(token);
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("userId", userInfo.id);
-
-      setUsername("");
-      setPassword("");
-
       onLogin(token, userInfo.id);
     } catch (err) {
-      if (isSignup) {
-        setError("Username already taken or signup failed.");
-      } else {
+      if (isSignup && err.response?.status === 400) {
+        setError("Username already taken.");
+      } else if (!isSignup && err.response?.status === 401) {
         setError("Incorrect username or password.");
+      } else {
+        setError("Something went wrong. Please try again.");
       }
     }
   };
