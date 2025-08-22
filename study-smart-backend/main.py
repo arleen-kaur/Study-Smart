@@ -26,8 +26,9 @@ app = FastAPI()
 
 # ✅ Explicitly list allowed origins
 origins = [
-    "https://study-smart-2ra9-hz9xkuxcv-arleen-kaurs-projects.vercel.app",  # your deployed frontend
+    "https://study-smart-2ra9-hz9xkuxcv-arleen-kaurs-projects.vercel.app",  # deployed frontend
     "http://localhost:5173",  # local dev (Vite default)
+    # you can also add "https://*.vercel.app" if you want to allow all Vercel preview URLs
 ]
 
 app.add_middleware(
@@ -171,4 +172,5 @@ def log_task(input: TaskActionInput, background_tasks: BackgroundTasks, current_
     finally:
         db.close()
 
+# ✅ auto-create tables in Postgres/SQLite if not exist
 Base.metadata.create_all(bind=engine)
