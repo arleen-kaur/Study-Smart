@@ -24,9 +24,15 @@ load_dotenv()
 
 app = FastAPI()
 
+# ✅ Explicitly list allowed origins
+origins = [
+    "https://study-smart-2ra9-hz9xkuxcv-arleen-kaurs-projects.vercel.app",  # your deployed frontend
+    "http://localhost:5173",  # local dev (Vite default)
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -166,5 +172,3 @@ def log_task(input: TaskActionInput, background_tasks: BackgroundTasks, current_
         db.close()
 
 Base.metadata.create_all(bind=engine)
-
-
