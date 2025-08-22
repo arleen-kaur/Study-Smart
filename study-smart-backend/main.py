@@ -26,10 +26,11 @@ app = FastAPI()
 
 # ✅ Explicitly list allowed origins
 origins = [
-    "https://study-smart-2ra9-hz9xkuxcv-arleen-kaurs-projects.vercel.app",  # deployed frontend
-    "http://localhost:5173",  # local dev (Vite default)
-    # you can also add "https://*.vercel.app" if you want to allow all Vercel preview URLs
+    "https://study-smart-2ra9-hz9xkuxcv-arleen-kaurs-projects.vercel.app",
+    "http://localhost:5173",
+    "https://*.vercel.app"
 ]
+
 
 app.add_middleware(
     CORSMiddleware,
