@@ -17,7 +17,11 @@ function Login({ onLogin }) {
       }
 
       const token = await login(username, password);
-      const userInfo = await getUserInfo(token);
+      localStorage.setItem("token", token); // ✅ Save token
+
+      const userInfo = await getUserInfo();
+      localStorage.setItem("userId", userInfo.id); // ✅ Save userId
+
       onLogin(token, userInfo.id);
     } catch (err) {
       if (isSignup && err.response?.status === 400) {
