@@ -26,10 +26,10 @@ app = FastAPI()
 
 # ✅ Explicitly list allowed origins
 origins = [
-    "https://study-smart-2ra9-hz9xkuxcv-arleen-kaurs-projects.vercel.app",
-    "http://localhost:5173",
-    "https://*.vercel.app"
+    "https://study-smart-2ra9-hz9xkuxcv-arleen-kaurs-projects.vercel.app",  # your prod frontend
+    "http://localhost:5173"  # local dev
 ]
+
 
 
 app.add_middleware(
