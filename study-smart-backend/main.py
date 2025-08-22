@@ -87,6 +87,7 @@ def call_gpt_parse_tasks(raw_text: str, must_do_tasks: list[str]):
 
 @app.post("/personalized-schedule")
 async def personalized_schedule(task_input: TaskInput, current_user=Depends(get_current_user)):
+    print("DEBUG - received task_input:", task_input.dict())
     try:
         parsed_tasks = call_gpt_parse_tasks(task_input.raw_tasks_text, task_input.must_do_tasks)
         df_logs = get_user_logs(current_user.id)

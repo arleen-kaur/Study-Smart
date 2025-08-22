@@ -7,11 +7,15 @@ function getAuthHeaders() {
 }
 
 export async function signup(username, password) {
-  await fetch(`${BASE_URL}/auth/register`, {
+  const res = await fetch(`${BASE_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })
   });
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.detail || "Signup failed");
+  }
 }
 
 export async function login(username, password) {
@@ -43,7 +47,7 @@ export async function getSchedule(text, minutes) {
     body: JSON.stringify({
       raw_tasks_text: text,
       available_time_minutes: minutes,
-      must_do_tasks: []   // ✅ always send this field (fix)
+      must_do_tasks: []   // ✅ always send this field
     })
   });
   const data = await res.json();

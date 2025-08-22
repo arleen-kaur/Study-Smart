@@ -17,20 +17,14 @@ function Login({ onLogin }) {
       }
 
       const token = await login(username, password);
-      localStorage.setItem("token", token); // ✅ Save token
+      localStorage.setItem("token", token);
 
       const userInfo = await getUserInfo();
-      localStorage.setItem("userId", userInfo.id); // ✅ Save userId
+      localStorage.setItem("userId", userInfo.id);
 
       onLogin(token, userInfo.id);
     } catch (err) {
-      if (isSignup && err.response?.status === 400) {
-        setError("Username already taken.");
-      } else if (!isSignup && err.response?.status === 401) {
-        setError("Incorrect username or password.");
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
+      setError(err.message || "Something went wrong. Please try again.");
     }
   };
 
@@ -46,7 +40,7 @@ function Login({ onLogin }) {
 
         <div className="space-y-4">
           {error && (
-            <div className="bg-rose text-rose-700 border border-red-300 text-sm p-3 rounded-lg">
+            <div className="bg-rose-100 text-rose-700 border border-red-300 text-sm p-3 rounded-lg">
               {error}
             </div>
           )}
