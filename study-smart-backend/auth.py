@@ -107,3 +107,12 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
 @router.get("/userinfo")
 async def get_user_info(current_user: DBUser = Depends(get_current_user)):
     return {"id": current_user.id, "username": current_user.username}
+
+@router.post("/debug-auth")
+def debug_auth(user_in: UserIn, db: Session = Depends(get_db)):
+    user = get_user(db, user_in.username)
+    if not user:
+        return {"status": "user not found"}
+    if not verify_password(user_in.password, user.hashed_password):
+        return {"status": "password incorrect"}
+    return {"status": "authentication successful"}
