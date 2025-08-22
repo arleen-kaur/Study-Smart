@@ -38,7 +38,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+) #change
 
 app.include_router(auth_router, prefix="/auth")
 
