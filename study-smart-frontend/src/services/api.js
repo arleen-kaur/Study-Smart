@@ -14,6 +14,11 @@ export async function login(username, password) {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ username, password })
   });
+
+  if (!res.ok) {
+    throw new Error(`Login failed with status ${res.status}`);
+  }
+
   const data = await res.json();
   return data.access_token;
 }
@@ -22,6 +27,11 @@ export async function getUserInfo(token) {
   const res = await fetch(`${BASE_URL}/auth/userinfo`, {
     headers: { Authorization: `Bearer ${token}` }
   });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch user info");
+  }
+
   return await res.json();
 }
 
